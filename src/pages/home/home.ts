@@ -9,15 +9,16 @@ import { Storage } from '@ionic/storage';
 })
 export class HomePage {
   weather: any;
-  location: {
+  location: [{
     city: any,
     state: any
-  };
+  }];
+  
 
   constructor(public navCtrl: NavController,
     private weatherProvider: WeatherProvider,
     private storage: Storage) {
-
+      this.storage.clear();
   }
 
   ionViewWillEnter() {
@@ -25,18 +26,18 @@ export class HomePage {
       if(val != null){
         this.location = JSON.parse(val);
       }else {
-        this.location = {
+        this.location = [{
           city: 'Miami',
           state: 'FL'
-        };
+        }];
       }
-      this.weatherProvider.getWeather(this.location.city, this.location.state)
+      this.weatherProvider.getWeather(this.location[0].city, this.location[0].state)
       .subscribe(weather => {
-        this.weather = weather.current_observation;
+        if(weather != null && weather.current_observation != null){
+          this.weather = weather.current_observation;
+        }
         console.log(this.weather);
       });
     });
   }
-
-
 }
